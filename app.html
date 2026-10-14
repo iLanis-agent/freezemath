@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Freeze math - calculators</title>
+<style>
+  :root { --accent: #3a7a4a; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: Georgia, 'Times New Roman', serif; background: #f4f6f8; color: #24282c; line-height: 1.55; }
+  main { max-width: 1100px; margin: 0 auto; padding: 40px 20px 64px; }
+  h1 { font-size: 2rem; margin: 0 0 8px; color: var(--accent); }
+  .lede { margin: 0 0 14px; max-width: 640px; }
+  .note { background: #fff; border: 1px solid #d8dfe6; border-left: 4px solid var(--accent); border-radius: 6px; padding: 12px 16px; font-size: 0.9rem; margin: 0 0 28px; max-width: 720px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; }
+  section { background: #fff; border: 1px solid #d8dfe6; border-radius: 8px; padding: 20px 22px; }
+  h2 { font-size: 1.15rem; margin: 0 0 6px; }
+  .hint { font-size: 0.9rem; color: #727e88; margin: 0 0 14px; }
+  label { display: block; font-size: 0.9rem; margin: 10px 0 3px; }
+  input { width: 100%; padding: 8px 10px; font-size: 1rem; border: 1px solid #b3bfc9; border-radius: 5px; font-family: inherit; }
+  button { margin-top: 16px; width: 100%; padding: 11px; background: var(--accent); color: #fff; border: 0; border-radius: 6px; font-size: 1rem; cursor: pointer; font-family: inherit; }
+  button:hover { filter: brightness(1.08); }
+  .out { margin-top: 14px; font-size: 1rem; min-height: 1.4em; }
+  .out.err { color: #a32222; }
+  footer { max-width: 1100px; margin: 0 auto; padding: 0 20px 40px; font-size: 0.85rem; color: #98a2ab; }
+  a { color: var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Freeze math</h1>
+  <p class="lede">The system names the concentrate, the target names the top-up, and the jug names the price. Exact arithmetic, every borrowed number labeled.</p>
+  <div class="note">Illustrative planning arithmetic only. Every figure is a labeled default you replace by reading your owner's manual and the jug. More glycol is not more protection: past the sweet spot the freeze point climbs again. Use the coolant type your manual names, never mix colors on a guess, and dispose of old coolant properly - it is toxic and sweet-tasting to animals.</div>
+  <div class="grid">
+    <section>
+      <h2>Mix plan</h2>
+      <p class="hint">The system names the concentrate.</p>
+      <label for="m-c">System capacity (qt)</label>
+      <input id="m-c" type="number" value="10" min="0" step="0.5">
+      <label for="m-p">Target glycol (%)</label>
+      <input id="m-p" type="number" value="50" min="0" step="5">
+      <button id="m-go">Pour the mix</button>
+      <div class="out" id="m-out"></div>
+    </section>
+    <section>
+      <h2>Top-up plan</h2>
+      <p class="hint">The target names the top-up.</p>
+      <label for="t-v">Mix in the system (qt)</label>
+      <input id="t-v" type="number" value="8" min="0" step="0.5">
+      <label for="t-c">Current glycol (%)</label>
+      <input id="t-c" type="number" value="35" min="0" step="5">
+      <label for="t-t">Target glycol (%)</label>
+      <input id="t-t" type="number" value="50" min="0" step="5">
+      <button id="t-go">Close the gap</button>
+      <div class="out" id="t-out"></div>
+    </section>
+    <section>
+      <h2>Cost plan</h2>
+      <p class="hint">The jug names the price.</p>
+      <label for="c-p">Concentrate ($ per gal)</label>
+      <input id="c-p" type="number" value="22" min="0" step="0.5">
+      <label for="c-m">Premix ($ per gal)</label>
+      <input id="c-m" type="number" value="14" min="0" step="0.5">
+      <label for="c-q">Mix needed (qt)</label>
+      <input id="c-q" type="number" value="10" min="0" step="1">
+      <button id="c-go">Price the quarts</button>
+      <div class="out" id="c-out"></div>
+    </section>
+  </div>
+</main>
+<footer>Built by the app factory. <a href="index.html">About</a> &middot; <a href="https://github.com/iLanis-agent/freezemath">Source</a></footer>
+<script src="engine.js"></script>
+<script>
+function num(id){ return parseFloat(document.getElementById(id).value); }
+function show(id, r, render){
+  var el = document.getElementById(id);
+  if (r.error) { el.textContent = r.error; el.classList.add('err'); }
+  else { el.textContent = render(r); el.classList.remove('err'); }
+}
+document.getElementById('m-go').addEventListener('click', function(){
+  var a=[num('m-c'),num('m-p')];
+  show('m-out', FreezeMath.mixPlan.apply(null,a), function(r){ return FreezeMath.renderMix.apply(null,[r].concat(a)); });
+});
+document.getElementById('t-go').addEventListener('click', function(){
+  var a=[num('t-v'),num('t-c'),num('t-t')];
+  show('t-out', FreezeMath.topupPlan.apply(null,a), function(r){ return FreezeMath.renderTopup.apply(null,[r].concat(a)); });
+});
+document.getElementById('c-go').addEventListener('click', function(){
+  var a=[num('c-p'),num('c-m'),num('c-q')];
+  show('c-out', FreezeMath.costPlan.apply(null,a), function(r){ return FreezeMath.renderCost.apply(null,[r].concat(a)); });
+});
+</script>
+</body>
+</html>
